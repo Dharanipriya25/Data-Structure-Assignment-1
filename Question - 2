@@ -1,0 +1,145 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a node in the circular queue
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// Global pointers for front and rear of the queue
+Node* front = NULL;
+Node* rear = NULL;
+
+// Function to create a new node
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Function to insert an element into the circular queue
+void enQueue(int value) {
+    Node* newNode = createNode(value);
+
+    // Case 1: Queue is empty
+    if (front == NULL) {
+        front = rear = newNode;
+        rear->next = front; // Point rear to front to make it circular
+    } else {
+        // Case 2: Queue is not empty
+        rear->next = newNode;
+        rear = newNode;
+        rear->next = front; // Maintain circular linkage
+    }
+    printf("Inserted %d into the queue.\n", value);
+}
+
+// Function to remove an element from the circular queue
+void deQueue() {
+    // Case 1: Queue is empty
+    if (front == NULL) {
+        printf("Queue is empty.\n");
+        return;
+    }
+
+    // Case 2: Queue has only one node
+    if (front == rear) {
+        printf("Removed %d from the queue.\n", front->data);
+        free(front);
+        front = rear = NULL;
+    } else {
+        // Case 3: Queue has more than one node
+        Node* temp = front;
+        printf("Removed %d from the queue.\n", front->data);
+        front = front->next;
+        rear->next = front; // Update rear to point to the new front
+        free(temp);
+    }
+}
+
+// Function to get the front item of the queue
+void getFront() {
+    if (front == NULL) {
+        printf("Queue is empty.\n");
+        return;
+    }
+    printf("Front item: %d\n", front->data);
+}
+
+// Function to get the rear item of the queue
+void getRear() {
+    if (rear == NULL) {
+        printf("Queue is empty.\n");
+        return;
+    }
+    printf("Rear item: %d\n", rear->data);
+}
+
+// Function to print all elements in the circular queue
+void printQueue() {
+    if (front == NULL) {
+        printf("Queue is empty.\n");
+        return;
+    }
+
+    Node* temp = front;
+    do {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    } while (temp != front);
+    printf("\n");
+}
+
+// Main function to demonstrate the circular queue operations
+int main() {
+    int choice, value;
+
+    while (1) {
+        printf("\nCircular Queue Operations:\n");
+        printf("1. Enqueue\n");
+        printf("2. Dequeue\n");
+        printf("3. Get Front\n");
+        printf("4. Get Rear\n");
+        printf("5. Print Queue\n");
+        printf("6. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                // Enqueue operation
+                printf("Enter the value to enqueue: ");
+                scanf("%d", &value);
+                enQueue(value);
+                break;
+            case 2:
+                // Dequeue operation
+                deQueue();
+                break;
+            case 3:
+                // Get Front operation
+                getFront();
+                break;
+            case 4:
+                // Get Rear operation
+                getRear();
+                break;
+            case 5:
+                // Print Queue operation
+                printQueue();
+                break;
+            case 6:
+                // Exit the program
+                // Free remaining nodes
+                
+                printf("Exiting...\n");
+                return 0;
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
+    }
+
+    return 0;
+}
