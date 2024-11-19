@@ -1,0 +1,97 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Define the structure for a linked list node
+typedef struct Node {
+    int data;
+    struct Node* next;
+} Node;
+
+// Function to create a new node
+Node* createNode(int data) {
+    Node* newNode = (Node*)malloc(sizeof(Node));
+    newNode->data = data;
+    newNode->next = NULL;
+    return newNode;
+}
+
+// Function to find the middle node of the linked list
+Node* findMiddle(Node* head) {
+    if (head == NULL) return NULL;
+
+    Node* slow = head;
+    Node* fast = head;
+
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    return slow;
+}
+
+// Function to print the linked list
+void printList(Node* head) {
+    Node* temp = head;
+    while (temp != NULL) {
+        printf("%d ", temp->data);
+        temp = temp->next;
+    }
+    printf("\n");
+}
+
+// Function to free the linked list memory
+void freeList(Node* head) {
+    Node* temp;
+    while (head != NULL) {
+        temp = head;
+        head = head->next;
+        free(temp);
+    }
+}
+
+// Main function to demonstrate the functionality
+int main() {
+    int n, data;
+    Node *head = NULL, *tail = NULL;
+
+    // Input number of nodes
+    printf("Enter the number of nodes: ");
+    scanf("%d", &n);
+
+    if (n <= 0) {
+        printf("Invalid number of nodes.\n");
+        return 1;
+    }
+
+    // Input the values for each node and create the linked list
+    for (int i = 0; i < n; i++) {
+        scanf("%d", &data);
+
+        Node* newNode = createNode(data);
+        if (head == NULL) {
+            head = newNode;
+            tail = newNode;
+        } else {
+            tail->next = newNode;
+            tail = newNode;
+        }
+    }
+
+    // Print the linked list
+    printf("Linked List: ");
+    printList(head);
+
+    // Find and print the middle node
+    Node* middle = findMiddle(head);
+    if (middle != NULL) {
+        printf("Middle node: %d\n", middle->data);
+    } else {
+        printf("The list is empty.\n");
+    }
+
+    // Free allocated memory
+    freeList(head);
+
+    return 0;
+}
